@@ -5,7 +5,7 @@ from pandas import Series
 
 def bloomberg_isins_to_tickers(
   isins: Union(List, Tuple, ndarray, Series)
-  ) -> Set
+  ) -> Set:
   """
   Formats isin codes for Bloomberg requests (e.g. /ISIN/{isin}) and checks for the correct length of any element (must be 12).
   
@@ -29,7 +29,7 @@ def bloomberg_isins_to_tickers(
   
   def bbg_i2t(
     isins: Union(List, Tuple, ndarray, Series)
-    ) -> Set
+    ) -> Set:
     """
     Convenience shorthand for function `bloomberg_isins_to_tickers`
     """
