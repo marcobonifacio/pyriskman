@@ -34,7 +34,3 @@ def bloomberg_isins_to_tickers(
     Convenience shorthand for function `bloomberg_isins_to_tickers`
     """
     return bloomberg_isins_to_tickers(isins)
-    
-    
-  def bloomberg_tickers_to_isins:
-    pass
