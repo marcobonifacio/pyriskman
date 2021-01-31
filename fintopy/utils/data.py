@@ -64,7 +64,7 @@ def bbg_t2i(
 
 def bloomberg_dropfield(
   columns: MultiIndex
-  ) -> Index
+  ) -> Index:
   """
   Drop the inner level from a Pandas two-level MultiIndex (for Bloomberg historical request with one field).
   
