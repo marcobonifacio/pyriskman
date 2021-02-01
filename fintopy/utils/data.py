@@ -6,16 +6,15 @@ from pandas import DataFrame, Index, MultiIndex, Series
 def bloomberg_isins_to_tickers(
     isins: Union(List, Tuple, ndarray, Series)
     ) -> Set:
-    """
-    Formats isin codes for Bloomberg requests (e.g. /ISIN/{isin}) and checks for the correct length of any element (must be 12).
+    """Formats isin codes for Bloomberg requests.
+    
+    Checks the correct length of any element of the sequence and returns a set formatted for Bloomberg requests (e.g. /ISIN/{isin}).
 
-    Parameters
-    ----------
-    isins: list, tuple, 1-d array, Pandas Series
+    Args:
+        isins: a sequence containing the ISINs to be formatted. 
   
-    Returns
-    -------
-    tickers: set
+    Returns:
+        A set of formatted ISINs.
     """
     if isinstance(isins, Series):
         isins = isins.value
@@ -30,50 +29,40 @@ def bloomberg_isins_to_tickers(
 def bbg_i2t(
     isins: Union(List, Tuple, ndarray, Series)
     ) -> Set:
-    """
-    Convenience shorthand for function `bloomberg_isins_to_tickers`.
+    """Convenience shorthand for function `bloomberg_isins_to_tickers`.
     """
     return bloomberg_isins_to_tickers(isins)
     
     
 def bloomberg_tickers_to_isins(
-    tickers: Index
-    ) -> Index:
-    """
-    Returns ISIN codes deleting the Bloomberg request format.
+    tickers: Index) -> Index:
+    """Deletes Bloomberg request format from ISIN codes.
     
-    Parameters
-    ----------
-    tickers: Pandas Index (index or columns)
+    Args:
+        tickers: A Pandas Index (index or columns) returned by Bloomberg.
   
-    Returns
-    -------
-    Pandas Index
+    Returns:
+        An unformatted Pandas Index. 
     """
     return Index([ticker[6:] for ticker in tickers])
   
   
-def bbg_t2i(
-    tickers: Index
-    ) -> Index:
-    """
-    Convenience shorthand for function `bloomberg_tickers_to_isins`.
+def bbg_t2i(tickers: Index) -> Index:
+    """Convenience shorthand for function `bloomberg_tickers_to_isins`.
     """
     return bloomberg_tickers_to_isins(tickers)
 
 
 def bloomberg_dropfield(
-    columns: MultiIndex
-    ) -> Index:
-    """
-    Drop the inner level from a Pandas two-level MultiIndex (for Bloomberg historical request with one field).
+    columns: MultiIndex) -> Index:
+    """Drops the inner level from a Pandas two-level MultiIndex.
+    
+    Useful for Bloomberg historical request with only one field.
   
-    Parameters
-    ----------
-    columns: Pandas MultiIndex
+    Args:
+        columns: A Pandas two-level MultiIndex returned by Bloomberg.
   
-    Returns
-    -------
-    Pandas Index
+    Returns:
+        A Pandas Index
     """
     return columns.droplevel[1]
