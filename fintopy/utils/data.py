@@ -1,10 +1,10 @@
-from typing import Sequence, Set, Union
+from typing import List, Set, Tuple, Union
 from numpy import ndarray
 from pandas import DataFrame, Index, MultiIndex, Series
 
 
 def bloomberg_isins_to_tickers(
-    isins: Union(Sequence, ndarray, Series)
+    isins: Union[List, Tuple, ndarray, Series]
     ) -> Set:
     """Formats isin codes for Bloomberg requests.
     
@@ -20,8 +20,10 @@ def bloomberg_isins_to_tickers(
         An exception if the argument is not a sequence, a numpy array or a Pandas Series.
     """
     if isinstance(isins, Series):
-        isins = isins.value
-    elif isinstance(isins, Sequence) or isinstance(isins, ndarray):
+        isins = list(isins.values)
+    elif isinstance(isins, ndarray):
+        isins = list(isins)
+    elif isinstance(isins, List) or isinstance(isins, Tuple):
         pass
     else:
         raise Exception('The argument must be a sequence, a numpy array or a Pandas Series.')
@@ -34,7 +36,7 @@ def bloomberg_isins_to_tickers(
   
   
 def bbg_i2t(
-    isins: Union(Sequence, ndarray, Series)
+    isins: Union[List, Tuple, ndarray, Series]
     ) -> Set:
     """Convenience shorthand for function `bloomberg_isins_to_tickers`.
     """
@@ -81,7 +83,7 @@ def bloomberg_dropfield(
     Raises:
         An exception if the argument is not a two-level Pandas MultiIndex.
     """
-    if isinstance(columns, MultiIndex) and columns.levels == 2:
-        return columns.droplevel[1]
+    if isinstance(columns, MultiIndex) and len(columns.levels) == 2:
+        return columns.droplevel(1)
     else:
         raise Exception('The argument must be a two-level Pandas MultiIndex.')
