@@ -83,7 +83,28 @@ def bloomberg_dropfield(
     Raises:
         An exception if the argument is not a two-level Pandas MultiIndex.
     """
-    if isinstance(columns, MultiIndex) and len(columns.levels) == 2:
+    if isinstance(columns, MultiIndex) and columns.nlevels == 2:
         return columns.droplevel(1)
     else:
         raise Exception('The argument must be a two-level Pandas MultiIndex.')
+    
+    
+def bloomberg_xs(df: DataFrame) -> List[DataFrame]:
+    """Returns a cross-section of a Bloomberg request.
+
+    Args:
+        df: a Pandas DataFrame returned by Bloomberg with a two-level MultiIndex as columns.
+    
+    Returns:
+        A list of Pandas Dataframes.
+
+    Raises:
+        An exception if the argument is not a Pandas DataFrame nor it has a two-level MultiIndex as columns.
+    """
+    if isinstance(df, DataFrame) and df.columns.nlevels == 2:
+        out = []
+        for l in df.columns.levels[1]:
+            out.append(df.xs(l, level=1, axis=1))
+        return(out)
+    else:
+        raise Exception('The argument must be a Pandas Dataframe with a two-level MultiIndex as columns.')
