@@ -3,29 +3,27 @@ import pandas as pd
 import pytest
 
 import fintopy.utils.data as fud
+import tests.test_data as td
 
 
 def test_bbg_i2t():
-    isins_seq = ['IT1234567890', 'DE1234567890', 'US1234567890', 'FAKE']
+    isins_seq = td.isin_codes + ['FAKE']
     isins_array = np.asarray(isins_seq)
     isins_series = pd.Series(isins_seq, index=range(len(isins_seq)))
 
     # test isins as Sequence
     result = fud.bbg_i2t(isins_seq)
-    expected = set(['/ISIN/IT1234567890', '/ISIN/DE1234567890',
-     '/ISIN/US1234567890'])
+    expected = set(['/ISIN/IT1234567890', '/ISIN/DE1234567890'])
     assert result == expected
 
     # tests isins as ndarray
     result = fud.bbg_i2t(isins_array)
-    expected = set(['/ISIN/IT1234567890', '/ISIN/DE1234567890',
-     '/ISIN/US1234567890'])
+    expected = set(['/ISIN/IT1234567890', '/ISIN/DE1234567890'])
     assert result == expected
 
     # tests isins as Series
     result = fud.bbg_i2t(isins_series)
-    expected = set(['/ISIN/IT1234567890', '/ISIN/DE1234567890',
-     '/ISIN/US1234567890'])
+    expected = set(['/ISIN/IT1234567890', '/ISIN/DE1234567890'])
     assert result == expected
 
     # raises an exception
@@ -34,13 +32,12 @@ def test_bbg_i2t():
 
 
 def test_bbg_t2i():
-    tickers = ['/ISIN/IT1234567890', '/ISIN/DE1234567890',
-     '/ISIN/US1234567890']
+    tickers = ['/ISIN/IT1234567890', '/ISIN/DE1234567890']
     tickers_idx = pd.Index(tickers)
 
     # tests tickers as Index
     result = fud.bbg_t2i(tickers_idx)
-    expected = pd.Index(['IT1234567890', 'DE1234567890', 'US1234567890'])
+    expected = pd.Index(['IT1234567890', 'DE1234567890'])
     assert result.all() == expected.all()
 
     # raises an exception
