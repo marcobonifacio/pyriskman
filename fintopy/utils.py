@@ -17,7 +17,7 @@ def isins_to_tickers(
         A set of formatted ISINs.
     
     Raises:
-        A `NotImplementedError` if the argument is not a sequence, a `numpy array` or a `Pandas Series`.
+        A `TypeError` if the argument is not a sequence, a `numpy array` or a `Pandas Series`.
     """
     if isinstance(isins, Series):
         isins = list(isins.values)
@@ -26,7 +26,7 @@ def isins_to_tickers(
     elif isinstance(isins, List) or isinstance(isins, Tuple):
         pass
     else:
-        raise NotImplementedError(f'The argument must be a sequence, a numpy array or a Pandas Series, a {type(isins)} was passed.')
+        raise TypeError(f'The argument must be a sequence, a numpy array or a Pandas Series, a {type(isins)} was passed.')
     
     for i in isins:
         if len(i) != 12:
@@ -45,12 +45,12 @@ def tickers_to_isins(tickers: Index) -> Index:
         An unformatted `Pandas Index`.
     
     Raises:
-        A `NotImplementedError` if the argument is not a `Pandas Index`.
+        A `TypeError` if the argument is not a `Pandas Index`.
     """
     if isinstance(tickers, Index):
         return Index([ticker[6:] for ticker in tickers])
     else:
-        raise NotImplementedError(f'The argument must be a Pandas Index, a {type(tickers)} was passed.')
+        raise TypeError(f'The argument must be a Pandas Index, a {type(tickers)} was passed.')
   
   
 def dropfield(columns: MultiIndex) -> Index:
@@ -65,12 +65,12 @@ def dropfield(columns: MultiIndex) -> Index:
         A `Pandas Index`.
     
     Raises:
-        A `NotImplementedError` if the argument is not a two-level `Pandas MultiIndex`.
+        A `TypeError` if the argument is not a two-level `Pandas MultiIndex`.
     """
     if isinstance(columns, MultiIndex) and columns.nlevels == 2:
         return columns.droplevel(1)
     else:
-        raise NotImplementedError(f'The argument must be a two-level Pandas MultiIndex, a {type(columns)} was passed.')
+        raise TypeError(f'The argument must be a two-level Pandas MultiIndex, a {type(columns)} was passed.')
     
     
 def xs_list(df: DataFrame) -> List[DataFrame]:
@@ -83,7 +83,7 @@ def xs_list(df: DataFrame) -> List[DataFrame]:
         A list of `Pandas DataFrames`.
 
     Raises:
-        A `NotImplementedError` if the argument is not a `Pandas DataFrame` nor it has a two-level `MultiIndex` as columns.
+        A `TypeError` if the argument is not a `Pandas DataFrame` nor it has a two-level `MultiIndex` as columns.
     """
     if isinstance(df, DataFrame) and df.columns.nlevels == 2:
         out = []
@@ -91,4 +91,4 @@ def xs_list(df: DataFrame) -> List[DataFrame]:
             out.append(df.xs(l, level=1, axis=1))
         return(out)
     else:
-        raise NotImplementedError('The argument must be a Pandas Dataframe with a two-level MultiIndex as columns.')
+        raise TypeError('The argument must be a Pandas Dataframe with a two-level MultiIndex as columns.')

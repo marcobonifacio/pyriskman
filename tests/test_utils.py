@@ -26,8 +26,8 @@ def test_isins_to_tickers():
     expected = set(['/ISIN/IT1234567890', '/ISIN/DE1234567890'])
     assert result == expected
 
-    # raises a NotImplementedError
-    with pytest.raises(NotImplementedError):
+    # raises a TypeError
+    with pytest.raises(TypeError):
         fin.isins_to_tickers('123')
 
 
@@ -40,8 +40,8 @@ def test_tickers_to_isins():
     expected = pd.Index(['IT1234567890', 'DE1234567890'])
     assert result.all() == expected.all()
 
-    # raises a NotImplementedError
-    with pytest.raises(NotImplementedError):
+    # raises a TypeError
+    with pytest.raises(TypeError):
         fin.tickers_to_isins(tickers)
 
 
@@ -53,8 +53,8 @@ def test_dropfield():
     expected = pd.Index(td.isin_codes)
     assert result.all() == expected.all()
 
-    # raises a NotImplementedError
-    with pytest.raises(NotImplementedError):
+    # raises a TypeError
+    with pytest.raises(TypeError):
         fin.dropfield(pd.Index(td.isin_codes))
 
 
@@ -67,6 +67,6 @@ def test_xs_list():
     for n in range(len(result)):
         assert result[n].all().all() == expected[n].all().all()
 
-    # raises a NotImplementedError
-    with pytest.raises(NotImplementedError):
+    # raises a TypeError
+    with pytest.raises(TypeError):
         fin.xs_list(pd.DataFrame(index=td.idx, columns=td.bbg_fields, data=[[p[0], p[1]] for p in td.prices]))

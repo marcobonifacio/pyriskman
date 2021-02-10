@@ -25,3 +25,4 @@ prices = [
 px_2lvls_multi_df = pd.DataFrame(index=idx, columns=multi_flds_cols, data=prices)
 px_2lvls_df = px_2lvls_multi_df.loc(axis=1)[:, ['PX_ASK']]
 px_1lvl_df = px_2lvls_multi_df.xs('PX_ASK', level=1, axis=1)
+px_s = px_1lvl_df.loc[:, isin_codes[0]]
