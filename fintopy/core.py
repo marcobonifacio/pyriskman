@@ -1,51 +1,24 @@
-from typing import Union
-from numpy import log
 from pandas import DataFrame, Series
 
+class TimeSeries:
 
-def log_prices(
-    prices: Union[DataFrame, Series]
-    ) -> Union[DataFrame, Series]:
-    """Returns logarithms of prices.
+    def __init__(self, df):
+        self._df = df
 
-    Args:
-        prices: a `Pandas DataFrame` or `Series` of prices.
-    
-    Returns:
-        A `Pandas DataFrame` or `Series` of log prices.
+    def __getattr__(self, attr):
+        if attr in self.__dict__:
+            return getattr(self, attr)
+        return getattr(self, self._df.attr)
 
-    Raises:
-        A `NotImplementedError` if the argument is not a `Pandas DataFrame` or `Series`.
-    """
-    if isinstance(prices, DataFrame) or isinstance (prices, Series):
-        return(prices.pipe(log))
-    else:
-        raise TypeError(f'The argument must be a Pandas DataFrame or Series, a {type(prices)} was passed.')
+    @property
+    def df(self):
+        return(self._df)
 
-
-def log_returns(
-    values: Union[DataFrame, Series],
-    kind: str = 'P'
-    ) -> Union[DataFrame, Series]:
-    """Calculates log returns.
-
-    Args:
-        values: a `Pandas DataFrame` or `Series` of prices.
-        kind: a string, must be P (default) if `values` are prices or R if they are percent returns. 
-    
-    Returns:
-        A `Pandas DataFrame` or `Series` of log returns.
-
-    Raises:
-        A `TypeError` if the argument `values` is not a `Pandas DataFrame` or `Series`.
-        A `ValueError` if the argument `kind` is not P or R. 
-    """
-    if isinstance(values, DataFrame) or isinstance(values, Series):
-        if kind == 'P':
-            return(values.pipe(log).diff())
-        elif kind == 'R':
-            return(values.add(1).pipe(log))
+    @df.setter
+    def df(self, d):
+        if isinstance(d, DataFrame):
+            self._df = d
+        elif isinstance(d, Series):
+            self._df = d.to_frame()
         else:
-            raise ValueError(f'The kind argument must be P for prices or R for percent returns, instead {kind} was passed.')
-    else:
-        raise TypeError(f'The values argument must be a Pandas DataFrame or Series, a {type(values)} was passed.')
+            raise TypeError('The argument passed to the constructor must be a Pandas DataFrame or Pandas Series')
