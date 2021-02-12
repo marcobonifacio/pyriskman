@@ -1,28 +1,34 @@
 import pandas as pd
 
+# DateTimeIndex
+dt_idx = pd.date_range('2021-01-01', periods=5)
 
-isin_codes = ['DE1234567890', 'IT1234567890']
+# Duplicate index
+dupl_idx = pd.to_datetime(['2021-01-01', '2021-01-01', '2021-01-02', '2021-01-03', '2021-01-03'])
 
+# Numeric index
+int_idx = [0, 1, 2, 3, 4]
 
-bbg_fields = ['PX_ASK', 'PX_BID']
+# Categorical index
+cat_idx = ['A', 'B', 'C', 'D', 'E']
 
+# Columns
+columns = ['Stock1', 'Stock2']
 
-multi_flds_cols = pd.MultiIndex.from_product([isin_codes, bbg_fields])
-
-
-idx = pd.date_range('2021-01-01', '2021-01-05')
-
-
-prices = [
-    [6.20, 6.30, 9.18, 9.35],
-    [6.05, 6.12, 9.23, 9.37],
-    [6.12, 6.18, 9.45, 9.54],
-    [5.89, 5.94, 9.36, 9.39],
-    [6.01, 6.08, 9.57, 9.63]
+# Prices data
+px_data = [
+    [3.45, 7.89],
+    [3.42, 7.96],
+    [3.18, 7.34],
+    [2.76, 6.84],
+    [2.91, 6.84]
     ]
 
-
-px_2lvls_multi_df = pd.DataFrame(index=idx, columns=multi_flds_cols, data=prices)
-px_2lvls_df = px_2lvls_multi_df.loc(axis=1)[:, ['PX_ASK']]
-px_1lvl_df = px_2lvls_multi_df.xs('PX_ASK', level=1, axis=1)
-px_s = px_1lvl_df.loc[:, isin_codes[0]]
+# Returns data
+ret_data = [
+    [0.02, -0.03],
+    [0.16, 1.25],
+    [-0.35, -1.13],
+    [0.89, 0.09],
+    [0.15, 0.00],
+]
