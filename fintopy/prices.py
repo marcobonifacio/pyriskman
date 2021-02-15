@@ -1,40 +1,45 @@
-"""Price accessor to `pandas.DataFrame` and `pandas.Series`.
+"""Accessor to `pandas.Series` for historical series of financial prices. 
 """
 
-import numpy as np
 import pandas as pd
 
 
-@pd.api.extensions.register_dataframe_accessor('prices')
-class PricesDataFrameAccessor:
-    """Price accessor to `pandas.DataFrame`.
+@pd.api.extensions.register_series_accessor('prices')
+class PricesSeriesAccessor:
+    """Accessor for historical series of financial prices.
+    
+    Examples:
+    >>> s.prices.set_period()
+    >>> s.prices.rebase()
     """
 
-    def __init__(self, df):
-        self._validate(df)
-        self._df = df.sort_index()
+    def __init__(self, series: pd.Series) -> None:
+        self._validate(series)
+        self._series = series.sort_index()
 
     @staticmethod
-    def _validate(df):
-        """Validates a `pandas.DataFrame`.
-
-        Checks if DataFrame Index is a DateTime Index and if it is unique.
-        Checks if all the prices are positive.
-        """
-        if not df.index.inferred_type == 'datetime64':
-            raise AttributeError('The DataFrame Index must be a DateTime Index.')
-        if not df.index.is_unique:
-            raise AttributeError('The DataFrame Index cannot have duplicates.')
-        if not (df > 0).all().all():
-            raise AttributeError('The DataFrame cannot have negative prices.')
-    
-    def log_prices(self):
-        """Calculates log prices.
-        """
-        return(self._df.pipe(np.log))
+    def _validate(series: pd.Series) -> None:
+        # Validates the price series.
+        if series.index.inferred_type != 'datetime64':
+            raise TypeError('The series index must be a DateTimeIndex.')
+        if not series.index.is_unique:
+            raise ValueError('The series index cannot have duplicates.')
+        if not (series > 0).all():
+            raise ValueError('The series cannot have negative prices.')
         
-    def rebase(self):
+    def set_period(self):
         pass
+    
+    def rebase(self, base: int = 100) -> pd.Series:
+        """Rebases the series.
+
+        Args:
+            base: The base for the new series. Defaults to 100.
+
+        Returns:
+            pd.Series: The rebased series.
+        """
+        return(self._series.divide(self._series.iloc[0]).multiply(base))
     
     def log_returns(self):
         pass
