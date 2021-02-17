@@ -1,2 +1,2 @@
 # fintopy
- Financial Tools written in Python
+ Pandas extensions for financial markets.
