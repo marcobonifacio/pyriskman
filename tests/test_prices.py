@@ -34,3 +34,6 @@ def test_rebase(sample_s):  # Pass
     result = sample_s.prices.rebase(base=200)
     assert pytest.approx(result.iat[1], 0.0001) == 200.192919
 
+def test_set_frequency(sample_s):  # Pass
+    result = sample_s.prices.set_frequency(freq='BW')
+    assert result.index[2] == pd.Timestamp('2021-01-22')
