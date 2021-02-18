@@ -9,7 +9,7 @@ class PricesSeriesAccessor:
     """Accessor for historical series of financial prices.
     
     Examples:
-    >>> s.prices.set_period()
+    >>> s.prices.set_frequency()
     >>> s.prices.rebase()
     """
 
@@ -27,8 +27,21 @@ class PricesSeriesAccessor:
         if not (series > 0).all():
             raise ValueError('The series cannot have negative prices.')
         
-    def set_period(self):
-        pass
+    def set_frequency(self, freq: str = 'B', method: str = 'pad',
+                      *args) -> pd.Series:
+        """Modifies / sets the frequency of the series.
+
+        Args:
+            freq: The frequency of the new series. Typical values could be 'B' (Business Day), 'BW' (alias for 'W-FRI', Business Week), 'BM' (Business Month), 'BQ' (Business Quarter), 'BY' (Business Year), Defaults to 'B' (Business Day).
+            method: Method fo filling the holes in the reindexed series. Can assume values `None` (fills with NaN), 'pad'/'ffill' (fills with previous value), 'backfill'/'bfill' (fills with next value). Defaults to 'pad'.
+            *args: Any other parameter passed to `pandas.Series.asfreq()` method.
+            
+        Returns:
+            pd.Series: A series with a modified frequency.
+        """              
+        if freq == 'BW':
+            freq = 'W-FRI'
+        return(self._series.asfreq(freq, method))
     
     def rebase(self, base: int = 100) -> pd.Series:
         """Rebases the series.
