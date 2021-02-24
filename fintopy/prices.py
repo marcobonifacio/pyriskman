@@ -41,7 +41,7 @@ class PricesSeriesAccessor:
         """              
         if freq == 'BW':
             freq = 'W-FRI'
-        return(self._series.asfreq(freq, method))
+        return self._series.asfreq(freq, method)
     
     def rebase(self, base: int = 100) -> pd.Series:
         """Rebases the series.
@@ -52,29 +52,37 @@ class PricesSeriesAccessor:
         Returns:
             pd.Series: The rebased series.
         """
-        return(self._series.divide(self._series.iloc[0]).multiply(base))
+        return self._series.divide(self._series.iloc[0]).multiply(base)
     
-    def log_returns(self, period: int = 1) -> pd.Series:
+    def log_returns(self, period: int = 1, dropna: bool = True) -> pd.Series:
         """Calculates logarithmic returns.
 
         Args:
             period: The calculation period. Defaults to 1.
+            dropna: If True, NAs are dropped. Defaults to True.
 
         Returns:
             pd.Series: The series of returns.
-        """        
-        return(self._series.apply(np.log).diff(period))
+        """
+        if dropna:        
+            return self._series.apply(np.log).diff(period).dropna()
+        else:
+            return self._series.apply(np.log).diff(period)
     
-    def pct_returns(self, period: int = 1) -> pd.Series:
+    def pct_returns(self, period: int = 1, dropna: bool = True) -> pd.Series:
         """Calculates percentage returns.
 
         Args:
             period: The calculation period. Defaults to 1.
+            dropna: If True, NAs are dropped. Defaults to True.
 
         Returns:
             pd.Series: The series of returns.
         """        
-        return(self._series.pct_change(period))
+        if dropna:
+            return self._series.pct_change(period).dropna()
+        else:
+            return self._series.pct_change(period)
     
     def abs_return(self) -> float:
         """Calculates the absolute return over the series.
@@ -82,7 +90,7 @@ class PricesSeriesAccessor:
         Returns:
             float: The absolute return over the series.
         """        
-        return(self._series.iloc[-1].div(self._series.iloc[0]).sub(1))
+        return self._series.iat(-1) / self._series.iat(0) - 1
     
     def annualized_return(self):
         pass
