@@ -1,6 +1,7 @@
 """Accessor to `pandas.Series` for historical series of financial prices. 
 """
 
+import numpy as np
 import pandas as pd
 
 
@@ -11,6 +12,7 @@ class PricesSeriesAccessor:
     Examples:
     >>> s.prices.set_frequency()
     >>> s.prices.rebase()
+    >>> s.prices.log_returns()
     """
 
     def __init__(self, series: pd.Series) -> None:
@@ -27,14 +29,12 @@ class PricesSeriesAccessor:
         if not (series > 0).all():
             raise ValueError('The series cannot have negative prices.')
         
-    def set_frequency(self, freq: str = 'B', method: str = 'pad',
-                      *args) -> pd.Series:
+    def set_frequency(self, freq: str = 'B', method: str = 'pad') -> pd.Series:
         """Modifies / sets the frequency of the series.
 
         Args:
             freq: The frequency of the new series. Typical values could be 'B' (Business Day), 'BW' (alias for 'W-FRI', Business Week), 'BM' (Business Month), 'BQ' (Business Quarter), 'BY' (Business Year), Defaults to 'B' (Business Day).
             method: Method fo filling the holes in the reindexed series. Can assume values `None` (fills with NaN), 'pad'/'ffill' (fills with previous value), 'backfill'/'bfill' (fills with next value). Defaults to 'pad'.
-            *args: Any other parameter passed to `pandas.Series.asfreq()` method.
             
         Returns:
             pd.Series: A series with a modified frequency.
@@ -54,14 +54,35 @@ class PricesSeriesAccessor:
         """
         return(self._series.divide(self._series.iloc[0]).multiply(base))
     
-    def log_returns(self):
-        pass
+    def log_returns(self, period: int = 1) -> pd.Series:
+        """Calculates logarithmic returns.
+
+        Args:
+            period: The calculation period. Defaults to 1.
+
+        Returns:
+            pd.Series: The series of returns.
+        """        
+        return(self._series.apply(np.log).diff(period))
     
-    def pct_returns(self):
-        pass
+    def pct_returns(self, period: int = 1) -> pd.Series:
+        """Calculates percentage returns.
+
+        Args:
+            period: The calculation period. Defaults to 1.
+
+        Returns:
+            pd.Series: The series of returns.
+        """        
+        return(self._series.pct_change(period))
     
-    def abs_return(self):
-        pass
+    def abs_return(self) -> float:
+        """Calculates the absolute return over the series.
+
+        Returns:
+            float: The absolute return over the series.
+        """        
+        return(self._series.iloc[-1].div(self._series.iloc[0]).sub(1))
     
     def annualized_return(self):
         pass
