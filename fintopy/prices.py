@@ -60,12 +60,12 @@ class PricesSeriesAccessor:
         """
         return self._series.divide(self._series.iloc[0]).multiply(base)
 
-    def log_returns(self, period: int = 1, dropna: bool = True) -> pd.Series:
+    def log_returns(self, period: int = 1, dropna: bool = False) -> pd.Series:
         """Calculates logarithmic returns.
 
         Args:
             period: The calculation period. Defaults to 1.
-            dropna: If True, NAs are dropped. Defaults to True.
+            dropna: If True, NAs are dropped. Defaults to False.
 
         Returns:
             pd.Series: The series of returns.
@@ -75,12 +75,12 @@ class PricesSeriesAccessor:
         else:
             return self._series.apply(np.log).diff(period)
 
-    def pct_returns(self, period: int = 1, dropna: bool = True) -> pd.Series:
+    def pct_returns(self, period: int = 1, dropna: bool = False) -> pd.Series:
         """Calculates percentage returns.
 
         Args:
             period: The calculation period. Defaults to 1.
-            dropna: If True, NAs are dropped. Defaults to True.
+            dropna: If True, NAs are dropped. Defaults to False.
 
         Returns:
             pd.Series: The series of returns.
@@ -122,14 +122,21 @@ class PricesSeriesAccessor:
         return (1 + self.abs_return()) ** (base / (self._series.index[-1] -\
             self._series.index[0]).days) - 1
 
-    def drawdown(self) -> pd.Series:
+    def drawdown(self, negative: bool = False) -> pd.Series:
         """Calculates the drawdown of the series.
+
+        Args:
+            negative: If True, returns a negative series. Defaults to False.
 
         Returns:
             pd.Series: The drawdown series.
         """        
-        return self._series.cummax().sub(self._series).\
-            div(self._series.cummax())
+        if negative:
+            return self._series.cummax().sub(self._series).\
+                div(self._series.cummax()).mul(-1)
+        else:
+            return self._series.cummax().sub(self._series).\
+                div(self._series.cummax())
 
     def max_drawdown(self) -> float:
         """Calculates the max drawdown.
@@ -137,4 +144,6 @@ class PricesSeriesAccessor:
         Returns:
             float: The max drawdown.
         """        
+        if self.drawdown.max() == 0:
+            return self.drawdown.min()
         return self.drawdown().max()
