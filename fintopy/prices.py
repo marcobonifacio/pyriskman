@@ -138,12 +138,16 @@ class PricesSeriesAccessor:
             return self._series.cummax().sub(self._series).\
                 div(self._series.cummax())
 
-    def max_drawdown(self) -> float:
+    def max_drawdown(self, negative=False) -> float:
         """Calculates the max drawdown.
+
+        Args:
+            negative: If True, uses a negative series. Defaults to False.
 
         Returns:
             float: The max drawdown.
         """        
-        if self.drawdown.max() == 0:
-            return self.drawdown.min()
-        return self.drawdown().max()
+        if negative:
+            return self.drawdown(negative=True).min()
+        else:
+            return self.drawdown().max()
