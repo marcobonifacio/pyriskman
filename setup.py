@@ -4,14 +4,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="fintopy", # Replace with your own username
+    name="pyriskman",
     version="0.0.1",
     author="Marco Bonifacio",
     author_email="bonifacio.marco@gmail.com",
-    description="Pandas extensions for financial markets.",
+    description="A Python framework for financial risk management.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/mbonix/fintopy",
+    url="https://github.com/mbonix/pyriskman",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

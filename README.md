@@ -1,2 +1,2 @@
-# fintopy
- Pandas extensions for financial markets.
+# PyRiskMan
+ A Python framework for financial risk management.
